@@ -1,0 +1,16 @@
+CyanogenMod 9 device configuration for the Huawei U8120
+
+Check out a copy of my u8120 device tree:
+cd device/huawei
+git clone --branch=master git://github.com/joilaroi/cm9_device_u8120.git  (this is for main branch)
+
+Copy proprietary files
+either by running extract-files.sh with a device connected in 
+or by running unzip-files.sh with a u8120 stock rom placed in as u8120_update.zip
+
+Set up the build environment:
+"source build/envsetup.sh"
+"lunch cm_u8120"
+"make bacon"
+
+

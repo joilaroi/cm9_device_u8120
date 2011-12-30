@@ -1,0 +1,4 @@
+on init
+    write /sys/module/g_android/parameters/product_id 1038
+    write /sys/devices/platform/android_usb/functions/cur_pid 1038
+    write /sys/devices/platform/android_usb/functions/enable_switch 0
