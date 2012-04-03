@@ -52,7 +52,6 @@ lib/libhwrpc.so
 lib/liboem_rapi.so
 
 lib/hw/sensors.default.so
-lib/hw/lights.msm7k.so
 
 lib/libomx_aacdec_sharedlibrary.so
 lib/libomx_amrdec_sharedlibrary.so

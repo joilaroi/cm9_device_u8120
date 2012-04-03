@@ -1,3 +1,8 @@
+# Sample file to extract required files from an original HTC Wildfire device
+# This script is not required if you have the proprietary repository
+#
+# This file is the file list used by extract-files.sh
+
 bin/akmd2
 bin/hci_qcomm_init
 bin/qmuxd
@@ -9,7 +14,6 @@ etc/init.qcom.bt.sh
 etc/pvplayer.cfg
 
 lib/hw/sensors.default.so
-lib/hw/gralloc.msm7k.so
 
 lib/libril-qc-1.so
 lib/libril-qcril-hook-oem.so
@@ -46,3 +50,4 @@ lib/libqcamera.so
 lib/libmmjpeg.so
 lib/libmmipl.so
 lib/libmmprocess.so
+

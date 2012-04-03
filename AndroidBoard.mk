@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2011 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+#
+# AndroidBoard.mk is a legacy mechanism to deal with a few
+# edge-cases that can't be managed otherwise. No new rules
+# should be added to this file.
 #
 
 LOCAL_PATH := $(call my-dir)
 
+# Least specific includes go first, so that they can get
+# overridden further down
 include $(CLEAR_VARS)
 
 ALL_PREBUILT += $(INSTALLED_KERNEL_TARGET)
+$(INSTALLED_KERNEL_TARGET): $(TARGET_PREBUILT_KERNEL) | $(ACP)
+   $(transform-prebuilt-to-target)
+
+# include the non-open-source counterpart to this file
+-include vendor/huawei/u8120/AndroidBoardVendor.mk

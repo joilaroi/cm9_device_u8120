@@ -1,0 +1,28 @@
+#!/system/bin/sh
+
+echo "try link huawei additional partition"
+if [ -b /dev/block/mtdblock7 ];
+then
+	mkdir /data/cust;
+	chown 1000.1000 /data/cust;
+	chmod 777 /data/cust;
+	mount /dev/block/mtdblock7 /data/cust;
+fi 
+
+# sdcard speed fix
+
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
+then
+    /system/xbin/echo "4096" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+fi
+
+# Bfq scheduler
+
+echo "bfq" > /sys/block/mmcblk0/queue/scheduler;
+echo 1 > /sys/block/mmcblk0/queue/rotational;
+for i in 1 2 3 4 5;
+do
+	echo "bfq" > /sys/block/mtdblock$i/queue/scheduler;
+	echo 0 > /sys/block/mtdblock$i/queue/rotational;
+done
+

@@ -1,5 +1,11 @@
 import init.u8120.usb.rc
 
+on early-init
+    export EXTERNAL_STORAGE /mnt/sdcard
+    mkdir /mnt/sdcard 0000 system system
+    # for backwards compatibility
+    symlink /mnt/sdcard /sdcard
+
 on post-fs
 
 # create WIFI filesystem structure
@@ -11,6 +17,11 @@ on post-fs
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
     mkdir /data/system 0775 system system
+
+    setprop wifi.interface eth0
+    mkdir /data/wpstiles/ 0777 shell
+    mkdir /etc/wiper 0775 location qcom_oncrpc
+    mkdir /data/misc/prox 0777 radio radio 
     
 #     
     mkdir /data/local 0777 radio shell
@@ -19,12 +30,8 @@ on post-fs
     chown radio shell /data/local/tmp
    
 on boot
-    # Hack for sh files in /etc 
-    chmod 7777 /system/etc/*.sh
-
-    # Temporary hack to prevent framebuffer flicker
-    write /sys/class/graphics/fb0/state 1
-    
+    setprop ro.bt.bdaddr_path "/data/.nvmac_bt.info"
+    mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chmod 0660                /sys/class/rfkill/rfkill0/state
@@ -48,8 +55,13 @@ on boot
     chmod 0777 /sys/kernel/logger/log_radio/enable
     chmod 0777 /sys/kernel/logger/log_radio/priority
 
-    # Setup android gadget
-    write /sys/module/g_android/parameters/serial_number CM7-U8120
+# cpufreq configurations
+    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 500000
+    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 90
+    write /sys/devices/system/cpu/cpufreq/ondemand/down_threshold 30
+
+   # Setup android gadget
+    write /sys/module/g_android/parameters/serial_number CM9-U8120
     write /sys/module/g_android/parameters/product_id 0x1038
 
     # SD card polling
@@ -64,32 +76,42 @@ on boot
     write /sys/bus/platform/drivers/msm_sdcc/msm_sdcc.1/polling 1
     write /sys/bus/platform/drivers/msm_sdcc/msm_sdcc.2/polling 1
 
-# Sensors
-    chmod 0777 /dev/accel
-    chmod 0777 /dev/akm8973_aot
-    chmod 0777 /dev/akm8973_dev
-    chmod 0777 /dev/light
-    chmod 0777 /dev/proximity
-
-    setprop wifi.interface eth0
-    mkdir /data/wpstiles/ 0777 shell
-    mkdir /etc/wiper 0775 location qcom_oncrpc
-    mkdir /data/misc/prox 0777 radio radio 
-
 # For qmuxd socket
     mkdir /data/radio 0770 radio radio
     chown radio radio 0770 /data/radio
+    chown radio system /dev/pm_monitor
+
+    chmod 0777 /dev/accel
+    chmod 0777 /dev/akm8973_aot
+    chmod 0777 /dev/akm8973_dev
+    chmod 0777 /dev/ofn
+
+# Input
+    chmod 0777 /dev/input/event0
+    chmod 0666 /dev/input/event1
+    chmod 0666 /dev/input/event2
+    chmod 0666 /dev/input/event3
+
+# Temporary hack to prevent framebuffer flicker
+    write /sys/class/graphics/fb0/state 1
+
+# Permissions for camera access
+    chmod 0666 /dev/msm_camera/config0
+    chmod 0666 /dev/msm_camera/control0
+    chmod 0666 /dev/msm_camera/frame0
+
+    # framebuffer permission for copybit
+    chmod 0667 /dev/graphics/fb0
 
 service qmuxd /system/bin/qmuxd
     class main
 
 # rmt_storage
 service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p10 /dev/block/mmcblk0p11
+    class main
     user root
-
-service rmt_oeminfo /system/bin/rmt_oeminfo
+    group radio
     disabled
-    oneshot 
     
 # Atheros BT filter
 on property:init.svc.bluetoothd=running
@@ -99,17 +121,19 @@ on property:init.svc.bluetoothd=running
 on property:init.svc.bluetoothd=stopped
     stop abtfilt
 
-service abtfilt /system/bin/abtfilt -c -d -z -n
-    disabled
-    oneshot
+# Bluetooth/WLAN coexistance filter for Atheros AR600x
+    service abtfilt /system/bin/abtfilt -c -d -z -n
+    user root
 
 service hci_qcomm_init /system/bin/log -t qcom-bluetooth -p i "hci_qcomm_init service requested"
+    class main
     user bluetooth
     group bluetooth net_bt_admin
     disabled
     oneshot
     
 service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
+    class main
     user bluetooth
     group qcom_oncrpc bluetooth net_bt_admin system
     disabled
@@ -119,11 +143,10 @@ service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
 service oem_rpc_svc /system/bin/oem_rpc_svc
     class main
     oneshot
-    
+
 # WPA SETTINGS
-service wpa_supplicant /system/bin/wpa_supplicant -Dawext -ieth0 -W -c/data/misc/wifi/wpa_supplicant.conf
+service wpa_supplicant /system/bin/wpa_supplicant -Dawext -ieth0 -W -c /data/misc/wifi/wpa_supplicant.conf
     class main
-    group wifi inet
     socket wpa_eth0 dgram 660 wifi wifi
     disabled
     oneshot
@@ -138,7 +161,17 @@ service iprenew_eth0 /system/bin/dhcpcd -n
     disabled
     oneshot
 
-# Compass / Accelerometer daemon  
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service iprenew_bnep0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+# compass/accelerometer daemon
 service akmd /system/bin/akmd2
     class main
     user compass
@@ -151,10 +184,13 @@ service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
     oneshot
     keycodes 115 232
 
+# AP mode daemon for Atheros AR600x
 service hostapd /system/bin/logwrapper /system/bin/hostapd /data/misc/wifi/hostapd.conf
     class main
     group wifi inet
     socket wpa_athap0 dgram 660 wifi wifi
     disabled
     oneshot
+
+
 

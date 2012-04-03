@@ -18,12 +18,13 @@
 #include <errno.h>
 #include <fcntl.h>
 
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
 #define LOG_TAG "UsbController"
 #include <cutils/log.h>
+#include <cutils/properties.h>
+#include <string.h>
 
 #include "UsbController.h"
 
@@ -35,13 +36,13 @@ UsbController::~UsbController() {
 }
 
 int UsbController::startRNDIS() {
-    LOGD("Usb RNDIS start");
-    return enableRNDIS(true);
+	LOGD("Usb RNDIS start");
+	return enableRNDIS(true);
 }
 
 int UsbController::stopRNDIS() {
-    LOGD("Usb RNDIS stop");
-    return enableRNDIS(false);
+	LOGD("Usb RNDIS stop");
+	return enableRNDIS(false);
 }
 
 int UsbController::enableRNDIS(bool enable) {
@@ -61,9 +62,9 @@ int UsbController::enableRNDIS(bool enable) {
 }
 
 bool UsbController::isRNDISStarted() {
-    char value[5];
-    int fd = open("/sys/module/g_android/parameters/product_id", O_RDONLY);
-    read(fd, &value, 5);
+    char value[1];
+    int fd = open("/sys/devices/platform/android_usb/functions/rndis", O_RDONLY);
+    read(fd, &value, 1);
     close(fd);
-    return (!strncmp(value,"1039",4) ? true : false);
+    return (!strncmp(value,"1",1) ? true : false);
 }

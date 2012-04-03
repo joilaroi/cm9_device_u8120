@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),u8120)
+
 LOCAL_PATH:= $(call my-dir)
 # HAL module implemenation, not prelinked and stored in
 # hw/<COPYPIX_HARDWARE_MODULE_ID>.<ro.board.platform>.so
 include $(CLEAR_VARS)
 
+LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := lights.c
 
 LOCAL_PRELINK_MODULE := false
@@ -26,7 +29,6 @@ LOCAL_SHARED_LIBRARIES := liblog
 
 LOCAL_MODULE := lights.u8120
 
-LOCAL_MODULE_TAGS := optional
-
 include $(BUILD_SHARED_LIBRARY)
 
+endif
