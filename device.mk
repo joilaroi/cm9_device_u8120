@@ -25,25 +25,24 @@ PRODUCT_PACKAGES += \
     hwprops \
     rzscontrol \
     librs_jni \
-    lights.u8120 \
-    lights.msm7k \
-    copybit.u8120 \
-    gralloc.u8120 \
+    lights.msm7x27\
     hwcomposer.default \
     gps.u8120 \
-    audio.primary.u8120 \
-    audio_policy.u8120 \
+    audio.primary.msm7x27 \
+    audio_policy.msm7x27 \
     audio.a2dp.default \
     libstagefrighthw \
     libopencorehw \
     libmm-omxcore \
     libOmxCore \
+    libOmxVdec \
+    libOmxVenc \
     Gallery2 \
     abtfilt \
-    bdaddr_read \
+    libcamera \
+    camera.msm7x27 \
     com.android.future.usb.accessory \
     zipalign \
-    camera.msm7x27 \
     dexpreopt
 
 PRODUCT_LOCALES := en_GB
@@ -80,9 +79,12 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/vold.fstab:system/etc/vold.fstab \
     $(LOCAL_PATH)/prebuilt/FileManager.apk:system/app/FileManager.apk
 
+# Camera libs
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/lib/hw/copybit.msm7x27.so:system/lib/hw/copybit.msm7x27.so \
-    $(LOCAL_PATH)/prebuilt/lib/hw/gralloc.msm7x27.so:system/lib/hw/gralloc.msm7x27.so
+    $(LOCAL_PATH)/libcamerahal/prebuilt/libqcamera.so:obj/lib/libqcamera.so \
+    $(LOCAL_PATH)/libcamerahal/prebuilt/libqcamera.so:system/lib/libqcamera.so \
+    $(LOCAL_PATH)/libcamerahal/prebuilt/libcamera.so:obj/lib/libcamera.so \
+    $(LOCAL_PATH)/libcamerahal/prebuilt/libcamera.so:system/lib/libcamera.so
 
 # Zipalign and Zram tweaks and MAC
 PRODUCT_COPY_FILES += \
@@ -114,6 +116,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keyfiles/synaptics.kl:system/usr/keylayout/synaptics.kl \
     $(LOCAL_PATH)/keyfiles/synaptics.kcm:system/usr/keychars/synaptics.kcm \
     $(LOCAL_PATH)/keyfiles/surf_keypad.kl:system/usr/keylayout/surf_keypad.kl \
+    $(LOCAL_PATH)/keyfiles/surf_keypad.kcm.bin:system/usr/keychars/surf_keypad.kcm.bin \
     $(LOCAL_PATH)/keyfiles/ts_test_input.kl:system/usr/keylayout/ts_test_input.kl \
     $(LOCAL_PATH)/keyfiles/qwerty.kl:system/usr/keylayout/qwerty.kl \
     $(LOCAL_PATH)/keyfiles/qwerty.kcm:system/usr/keychars/qwerty.kcm \
@@ -126,6 +129,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/modules/ar6000.ko:system/wifi/ar6000.ko \
     $(LOCAL_PATH)/prebuilt/modules/zram.ko:system/lib/modules/2.6.32.9-perf/zram.ko
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/prebuilt/lib/hw/copybit.msm7x27.so:system/lib/hw/copybit.msm7x27.so \
+    $(LOCAL_PATH)/prebuilt/lib/hw/gralloc.msm7x27.so:system/lib/hw/gralloc.msm7x27.so
 
 # Wi-Fi related
 PRODUCT_COPY_FILES += \
@@ -168,7 +175,13 @@ PRODUCT_COPY_FILES += \
 # Other
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/lib/egl/egl.cfg:system/lib/egl/egl.cfg \
-    $(LOCAL_PATH)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf
+    $(LOCAL_PATH)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
+    $(LOCAL_PATH)/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl
+
+# Sysctl
+PRODUCT_COPY_FILES += \
+    device/zte/common/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
+    device/zte/common/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf
 
 # Bluetooth configuration files
 PRODUCT_COPY_FILES += \

@@ -1,0 +1,5 @@
+#!/system/bin/sh
+#
+# read and set values from sysctl.conf
+
+sysctl -p
