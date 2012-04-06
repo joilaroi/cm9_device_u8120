@@ -28,7 +28,7 @@
     <int name="maxMessageCountPerThread">5000</int>
 
     <!-- UAProf URL -->
-    <string name="uaProfUrl">http://www.htcmms.com.tw/Android/Common/wildfire/ua-profile.xml</string>
+    <string name="uaProfUrl">http://wap1.huawei.com/uaprof/HuaweiU8120v100WCDMANormal.xml</string>
 
     <!-- Maximum number of recipients allowed per message. Use a value of -1
          to indicate no limit. -->
@@ -53,5 +53,5 @@
     <int name="maxMessageTextSize">-1</int>
 
     <!-- User-Agent parameter used in MMS http request -->
-    <string name="userAgent">HUAWEI-U8120-Mms</string>
+    <string name="userAgent">Android-Mms/2.0</string>
 </mms_config>

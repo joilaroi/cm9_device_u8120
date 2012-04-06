@@ -3,7 +3,6 @@ LOCAL_PATH := $(my-dir)
 ifeq ($(TARGET_DEVICE),u8120)
     subdir_makefiles := \
         $(LOCAL_PATH)/libaudio/Android.mk \
-        $(LOCAL_PATH)/libgralloc/Android.mk \
         $(LOCAL_PATH)/liblights/Android.mk \
         $(LOCAL_PATH)/librpc/Android.mk \
         $(LOCAL_PATH)/libcamerahal/Android.mk \
