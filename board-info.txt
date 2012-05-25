@@ -1,3 +1,0 @@
-require board=u8120
-require version-bootloader=*
-require version-baseband=*

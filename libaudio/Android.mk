@@ -5,7 +5,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := audio_policy.msm7x27
+LOCAL_MODULE := audio_policy.u8120
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
 LOCAL_STATIC_LIBRARIES := libmedia_helper
 LOCAL_WHOLE_STATIC_LIBRARIES := libaudiopolicy_legacy    
@@ -26,7 +26,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := audio.primary.msm7x27
+LOCAL_MODULE := audio.primary.u8120
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw	
 LOCAL_STATIC_LIBRARIES += libmedia_helper	
 LOCAL_WHOLE_STATIC_LIBRARIES := libaudiohw_legacy

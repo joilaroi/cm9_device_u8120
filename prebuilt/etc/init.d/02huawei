@@ -1,28 +1,36 @@
 #!/system/bin/sh
 
+# Huawei Userdata2
 echo "try link huawei additional partition"
 if [ -b /dev/block/mtdblock7 ];
 then
-	mkdir /data/cust;
-	chown 1000.1000 /data/cust;
-	chmod 777 /data/cust;
+	mkdir /data/userdata2;
+	chown 1000.1000 /data/userdata2;
+	chmod 777 /data/userdata2;
 	mount /dev/block/mtdblock7 /data/cust;
-fi 
+fi
+
+#check softmac
+if [ -e /system/wifi/softmac ]
+then
+        touch /system/wifi/softmac
+        echo 4C:54:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10` > /system/wifi/softmac
+        cp /system/wifi/softmac /data/misc/wifi/softmac
+        sync
+fi
 
 # sdcard speed fix
-
 if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
 then
     /system/xbin/echo "4096" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
 fi
 
-# Bfq scheduler
-
+#real IO improve from v9.0 !!!!!
 echo "bfq" > /sys/block/mmcblk0/queue/scheduler;
 echo 1 > /sys/block/mmcblk0/queue/rotational;
 for i in 1 2 3 4 5;
 do
-	echo "bfq" > /sys/block/mtdblock$i/queue/scheduler;
+	echo "deadline" > /sys/block/mtdblock$i/queue/scheduler;
 	echo 0 > /sys/block/mtdblock$i/queue/rotational;
 done
 

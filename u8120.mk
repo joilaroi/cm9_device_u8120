@@ -12,21 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PRODUCT_PACKAGES := \
-    Camera \
-    SpareParts \
-    Development
-
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
-else
-LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
-
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
+# Include all languages
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Inherit from u8120 device
 $(call inherit-product, $(LOCAL_PATH)/device.mk)
@@ -36,11 +24,3 @@ $(call inherit-product, device/common/gps/gps_eu_supl.mk)
 
 $(call inherit-product-if-exists, vendor/huawei/u8120/u8120-vendor.mk)
 $(call inherit-product-if-exists, vendor/huawei/u8120/u8120-vendor-blobs.mk)
-
-PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := u8120
-PRODUCT_DEVICE := u8120
-PRODUCT_MODEL := Joy/U8120
-PRODUCT_BRAND := HUAWEI
-PRODUCT_MANUFACTURER := HUAWEI
-

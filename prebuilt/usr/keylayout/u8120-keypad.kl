@@ -1,0 +1,7 @@
+key 232   CAMERA
+key 231   CALL              WAKE
+key 62    ENDCALL           WAKE
+key 108   DPAD_DOWN         WAKE
+key 103   DPAD_UP           WAKE
+key 105   DPAD_LEFT         WAKE
+key 106   DPAD_RIGHT        WAKE

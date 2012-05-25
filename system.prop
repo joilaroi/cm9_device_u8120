@@ -1,106 +1,59 @@
 #
-# system.prop for u8120
+# system.prop for U8120
 #
-
-# View configuration for QVGA.
+# Graphics and performance
+ro.media.dec.jpeg.memcap=20000000
+windowsmgr.max_events_per_sec=500
+ro.opengles.version=65537
+ro.sf.lcd_density=120
 view.fading_edge_length=8
 view.touch_slop=15
 view.minimum_fling_velocity=25
 view.scroll_friction=0.008
-ro.sf.lcd_density=120
-qemu.sf.lcd_density=120
-persist.sys.use_dithering=0
+persist.sys.use_dithering=1
 persist.sys.purgeable_assets=1
 persist.sys.use_16bpp_alpha=1
+
+# WiFi
+wifi.interface=eth0
+wifi.supplicant_scan_interval=60
 
 # RIL
 rild.libargs=-d/dev/smd0
 rild.libpath=/system/lib/libril-qc-1.so
-ro.com.android.dataroaming=false
-ro.ril.hsxpa=1
-ro.ril.gprsclass=10
-ro.telephony.call_ring.multiple=false
-
-# Time between scans in seconds. Keep it high to minimize battery drain.
-# This only affects the case in which there are remembered access points,
-# but none are in range.
-wifi.interface=eth0
-wifi.supplicant_scan_interval=45
-
-# Mobile data interfaces
-ro.config_datause_iface=rmnet0
-mobiledata.interfaces=rmnet0,rmnet1,rmnet2
-
-# Allow or deny tethering.
-ro.tether.denied=false
-
-# Default network type.
-# 0 => WCDMA Preferred.
-ro.telephony.default_network=0
 ro.telephony.ril.v3=icccardstatus,datacall,signalstrength,facilitylock
-mobiledata.interfaces=rmnet0,rmnet1,rmnet2
-net.qtaguid_enabled=0
+ro.telephony.call_ring.delay=3000
 
-# No Autofocus device
-ro.workaround.noautofocus=1
-
-# Enable Google-specific location features,
-# like NetworkLocationProvider and LocationCollector.
-ro.com.google.locationfeatures=1
-
-# The OpenGL ES API level that is natively supported by this device.
-# This is a 16.16 fixed point number.
-ro.opengles.version=65536
-
-# Disable fs check on boot by default.
-sys.checkfs.fat=false
-
-# Performance settings
-debug.gr.swapinterval=0
-ro.zram.default=18
-dalvik.vm.dexopt-data-only=1
-dalvik.vm.execution-mode=int:jit
-dalvik.vm.heapsize = 32m
-dalvik.vm.checkjni = false
-persist.sys.rotationanimation=0
-persist.sys.scrollingcache=0
-debug.sf.hw=0
-ro.compcache.default=0
-ro.tether.denied=false
-sys.checkfs.fat=false
-ro.vold.umsdirtyratio=20
-
-# Increase SKIA decode memory capability for progressive jpg file.
-ro.media.dec.jpeg.memcap=20000000
-
-# Set default USB interface
+# USB
 persist.sys.usb.config=mass_storage,adb
-sys.usb.config=mass_storage
+sys.usb.config=mass_storage,adb
 persist.service.adb.enable=1
 
-# Huawei Gingerbread Config
-DEVICE_PROVISIONED=1
-ro.config.hw_power_saving=true
-ro.config.hw_voicerecord=true
-debug.sf.hw=1
+# System
+ro.kernel.android.checkjni=0
+dalvik.vm.checkjni=false
+dalvik.vm.heapsize=32m
+ro.compcache.default=26
+sys.checkfs.fat=false
+ro.vold.umsdirtyratio=20
+dalvik.vm.dexopt-data-only=1
+dalvik.vm.execution-mode=int:jit
+debug.sf.hw=0
+debug.camcorder.disablemeta=1
+ro.config.disable_hw_accel=true
+dalvik.vm.lockprof.threshold=500
+dalvik.vm.dexopt-flags=m=y
+dalvik.vm.dexopt-data-only=1
 
-# Camera related
-ro.workaround.noautofocus=1
-ro.config.PicMaxSize=3mp
+# Audio properties
+persist.sys.speaker-attn=6
 
-# Tweaks
-persist.sys.gmaps_hack=1
+# Misc.
+ro.com.android.dateformat=dd-MM-yyyy
+ro.com.google.locationfeatures=0
 
-# MMS & WAP related
-ro.config.ipcall=true
-ro.config.hw_support_ipcall=true
-ro.hw_oom_app=com.android.mms
-ro.config.hw_always_allow_mms=true
-ro.config.hw_gcf_mms=true
-ro.config.mms_rec_localtime=true
-ro.config.mms_ua=Android-Mms/2.0
-ro.config.hw_use_browser_ua=true
-ro.config.hw_uaprof=http://wap1.huawei.com/uaprof/HuaweiU8120v100WCDMANormal.xml
-ro.config.hw_browser_ua3g=http://wap1.huawei.com/uaprof/HuaweiU8120v100WCDMANormal.xml
-ro.config.hw_browser_ua2g=http://wap1.huawei.com/uaprof/HuaweiU8120v100GPRSNormal.xml
-
+# ICS properties
+net.qtaguid_enabled=0
+debug.gr.swapinterval=0
+ro.secure=0
+ro.config_datause_iface=rmnet0

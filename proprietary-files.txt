@@ -1,20 +1,16 @@
-# Sample file to extract required files from an original HTC Wildfire device
-# This script is not required if you have the proprietary repository
-#
-# This file is the file list used by extract-files.sh
-
 bin/akmd2
 bin/hci_qcomm_init
 bin/qmuxd
 bin/rild
 
 etc/01_qc.cfg
-etc/AudioFilterU8120.csv
+etc/AudioFilterU8150.csv
 etc/init.qcom.bt.sh
 etc/pvplayer.cfg
 
 lib/hw/sensors.default.so
 
+lib/libril.so
 lib/libril-qc-1.so
 lib/libril-qcril-hook-oem.so
 lib/libdiag.so
@@ -35,19 +31,15 @@ lib/libpbmlib.so
 lib/libdss.so
 lib/libauth.so
 
-lib/libOmxCore.so
 lib/libOmxH264Dec.so
 lib/libOmxMpeg4Dec.so
 lib/libOmxVidEnc.so
 lib/libOmxWmvDec.so
-lib/libOmxCore.so
 lib/libOmxVidEnc.so
 lib/libmm-adspsvc.so
-lib/libmm-omxcore.so
 
 lib/libcamera.so
 lib/libqcamera.so
 lib/libmmjpeg.so
 lib/libmmipl.so
 lib/libmmprocess.so
-

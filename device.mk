@@ -12,45 +12,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-
 DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
-DEVICE_PACKAGE_OVERLAYS += device/huawei/u8120/ldpi
-PRODUCT_PACKAGE_OVERLAYS += vendor/cm/overlay/ldpi
 
+# Discard inherited values and use our own instead.
+PRODUCT_NAME := huawei_u8120
+PRODUCT_DEVICE := u8120
+PRODUCT_MODEL := Huawei U8120
+
+PRODUCT_AAPT_CONFIG := mdpi hdpi
+PRODUCT_AAPT_PREF_CONFIG := mdpi
+PRODUCT_LOCALES += mdpi
+
+# Graphics 
 PRODUCT_PACKAGES += \
-    libRS \
+    gralloc.u8120 \
+    copybit.u8120
+
+# Audio
+PRODUCT_PACKAGES += \
+    audio.primary.u8120 \
+    audio_policy.u8120 \
+    audio.a2dp.default
+
+# Zram
+PRODUCT_PACKAGES += \
     hwprops \
-    rzscontrol \
-    librs_jni \
-    lights.msm7x27\
-    hwcomposer.default \
-    gps.u8120 \
-    audio.primary.msm7x27 \
-    audio_policy.msm7x27 \
-    audio.a2dp.default \
+    rzscontrol
+
+# Video decoding
+PRODUCT_PACKAGES += \
     libstagefrighthw \
     libopencorehw \
     libmm-omxcore \
-    libOmxCore \
-    libOmxVdec \
-    libOmxVenc \
-    Gallery2 \
-    abtfilt \
-    libcamera \
-    camera.msm7x27 \
-    com.android.future.usb.accessory \
-    zipalign \
-    dexpreopt
+    libOmxCore
 
-PRODUCT_LOCALES := en_GB
-PRODUCT_LOCALES += ldpi mdpi
-PRODUCT_AAPT_CONFIG := normal ldpi mdpi
-PRODUCT_AAPT_PREF_CONFIG := ldpi
+# Other
+PRODUCT_PACKAGES += \
+    lights.u8120 \
+    lights.msm7k \
+    gps.u8120 \
+    camera.u8120 \
+    Apollo
 
-# Support files
+# Goomanager & FileManager
+PRODUCT_PACKAGES += \
+    GooManager \
+    FileManager
+
+# Hardware permissions
 PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml \
     frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
@@ -60,87 +69,32 @@ PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
     frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
     frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/base/data/etc/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml \
+    frameworks/base/data/etc/android.hardware.touchscreen.xml:system/etc/permissions/android.hardware.touchscreen.xml \
     frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-    frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
-    frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
-    frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/base/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml
+    frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
 
-# Media configuration xml file
+# Vold and USB
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/media_profiles.xml:/system/etc/media_profiles.xml
+    $(LOCAL_PATH)/prebuilt/etc/vold.fstab:system/etc/vold.fstab \
+    $(LOCAL_PATH)/prebuilt/etc/start_usb0.sh:system/etc/start_usb0.sh \
+    $(LOCAL_PATH)/prebuilt/etc/media_profiles.xml:system/etc/media_profiles.xml
 
+# Init files
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/initlogo.rle:root/initlogo.rle \
-    $(LOCAL_PATH)/prebuilt/init.u8120.rc:root/init.u8120.rc \
-    $(LOCAL_PATH)/prebuilt/ueventd.u8120.rc:root/ueventd.u8120.rc \
-    $(LOCAL_PATH)/prebuilt/init.u8120.usb.rc:root/init.u8120.usb.rc \
-    $(LOCAL_PATH)/prebuilt/vold.fstab:system/etc/vold.fstab \
-    $(LOCAL_PATH)/prebuilt/FileManager.apk:system/app/FileManager.apk
-
-# Camera libs
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/libcamerahal/prebuilt/libqcamera.so:obj/lib/libqcamera.so \
-    $(LOCAL_PATH)/libcamerahal/prebuilt/libqcamera.so:system/lib/libqcamera.so \
-    $(LOCAL_PATH)/libcamerahal/prebuilt/libcamera.so:obj/lib/libcamera.so \
-    $(LOCAL_PATH)/libcamerahal/prebuilt/libcamera.so:system/lib/libcamera.so
-
-# Zipalign and Zram tweaks and MAC
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/etc/init.d/02huawei:system/etc/init.d/02huawei \
-    $(LOCAL_PATH)/prebuilt/bin/zipalign:system/bin/zipalign \
-    $(LOCAL_PATH)/prebuilt/etc/init.d/70zipalign:system/etc/init.d/70zipalign \
-    $(LOCAL_PATH)/prebuilt/etc/check_property.sh:system/etc/check_property.sh \
-    $(LOCAL_PATH)/firmware/softmac:system/wifi/softmac
-
-# Input device calibration files
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keyfiles/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc \
-    $(LOCAL_PATH)/keyfiles/synaptics.idc:system/usr/idc/synaptics.idc \
-    $(LOCAL_PATH)/keyfiles/msm_touchscreen.idc:system/usr/idc/msm_touchscreen.idc \
-    $(LOCAL_PATH)/keyfiles/melfas-touchscreen.idc:system/usr/idc/melfas-touchscreen.idc \
-    $(LOCAL_PATH)/keyfiles/surf_keypad.idc:system/usr/idc/surf_keypad.idc \
-    $(LOCAL_PATH)/keyfiles/touchscreen-keypad.idc:system/usr/idc/touchscreen-keypad.idc \
-    $(LOCAL_PATH)/keyfiles/ts_test_input.idc:system/usr/idc/ts_test_input.idc \
-    $(LOCAL_PATH)/keyfiles/7k_handset.idc:system/usr/idc/7k_handset.idc \
-
-# Keychars and keylayout files
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keyfiles/msm_touchscreen.kl:system/usr/keylayout/msm_touchscreen.kl \
-    $(LOCAL_PATH)/keyfiles/msm_touchscreen.kcm:system/usr/keychars/msm_touchscreen.kcm \
-    $(LOCAL_PATH)/keyfiles/synaptics-rmi-touchscreen.kl:system/usr/keylayout/synaptics-rmi-touchscreen.kl \
-    $(LOCAL_PATH)/keyfiles/synaptics-rmi-touchscreen.kcm:system/usr/keychars/synaptics-rmi-touchscreen.kcm \
-    $(LOCAL_PATH)/keyfiles/melfas-touchscreen.kl:system/usr/keylayout/melfas-touchscreen.kl \
-    $(LOCAL_PATH)/keyfiles/melfas-touchscreen.kcm:system/usr/keychars/melfas-touchscreen.kcm \
-    $(LOCAL_PATH)/keyfiles/synaptics.kl:system/usr/keylayout/synaptics.kl \
-    $(LOCAL_PATH)/keyfiles/synaptics.kcm:system/usr/keychars/synaptics.kcm \
-    $(LOCAL_PATH)/keyfiles/surf_keypad.kl:system/usr/keylayout/surf_keypad.kl \
-    $(LOCAL_PATH)/keyfiles/surf_keypad.kcm.bin:system/usr/keychars/surf_keypad.kcm.bin \
-    $(LOCAL_PATH)/keyfiles/ts_test_input.kl:system/usr/keylayout/ts_test_input.kl \
-    $(LOCAL_PATH)/keyfiles/qwerty.kl:system/usr/keylayout/qwerty.kl \
-    $(LOCAL_PATH)/keyfiles/qwerty.kcm:system/usr/keychars/qwerty.kcm \
-    $(LOCAL_PATH)/keyfiles/qwerty2.kcm:system/usr/keychars/qwerty2.kcm \
-    $(LOCAL_PATH)/keyfiles/Virtual.kcm:system/usr/keychars/Virtual.kcm \
-    $(LOCAL_PATH)/keyfiles/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
-    $(LOCAL_PATH)/keyfiles/qwerty2.kcm:system/usr/keychars/qwerty2.kcm \
+    $(LOCAL_PATH)/prebuilt/init.qcom.usb.rc:root/init.qcom.usb.rc \
+    $(LOCAL_PATH)/prebuilt/init.qcom.rc:root/init.qcom.rc \
+    $(LOCAL_PATH)/prebuilt/ueventd.qcom.rc:root/ueventd.qcom.rc \
+    $(LOCAL_PATH)/prebuilt/initlogo.rle:root/initlogo.rle
 
 # modules
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/modules/ar6000.ko:system/wifi/ar6000.ko \
-    $(LOCAL_PATH)/prebuilt/modules/zram.ko:system/lib/modules/2.6.32.9-perf/zram.ko
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/lib/hw/copybit.msm7x27.so:system/lib/hw/copybit.msm7x27.so \
-    $(LOCAL_PATH)/prebuilt/lib/hw/gralloc.msm7x27.so:system/lib/hw/gralloc.msm7x27.so
+    $(LOCAL_PATH)/prebuilt/lib/modules/ar6000.ko:system/wifi/ar6000.ko \
+    $(LOCAL_PATH)/prebuilt/lib/modules/zram.ko:system/lib/modules/zram.ko
 
 # Wi-Fi related
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/etc/dhcpcd/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
-    $(LOCAL_PATH)/prebuilt/etc/dhcpcd/dhcpcd.conf:system/etc/wifi/dhcpcd.conf \
-    $(LOCAL_PATH)/prebuilt/hostapd:system/bin/hostapd \
     $(LOCAL_PATH)/prebuilt/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-    $(LOCAL_PATH)/prebuilt/hostapd.conf:system/etc/wifi/hostapd.conf
 
 # Firmware
 PRODUCT_COPY_FILES += \
@@ -152,48 +106,64 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/firmware/data.patch.hw2_0.bin.ar6002:system/wifi/data.patch.hw2_0.bin.ar6002 \
     $(LOCAL_PATH)/firmware/device.bin:system/wifi/device.bin \
     $(LOCAL_PATH)/firmware/eeprom.bin:system/wifi/eeprom.bin \
-    $(LOCAL_PATH)/firmware/eeprom.data:system/wifi/eeprom.data
-
-# OEM RPC
-PRODUCT_COPY_FILES += \
-    vendor/huawei/u8120/proprietary/bin/modempre:system/bin/modempre \
-    vendor/huawei/u8120/proprietary/bin/oem_rpc_svc:system/bin/oem_rpc_svc \
-    vendor/huawei/u8120/proprietary/lib/libhwrpc.so:system/lib/libhwrpc.so \
-    vendor/huawei/u8120/proprietary/lib/liboem_rapi.so:system/lib/liboem_rapi.so
+    $(LOCAL_PATH)/firmware/eeprom.data:system/wifi/eeprom.data \
+    $(LOCAL_PATH)/firmware/softmac:system/wifi/softmac
 
 # Audio
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/etc/AudioFilter.csv:system/etc/AudioFilter.csv \
-    $(LOCAL_PATH)/prebuilt/etc/AudioFilterU8120.csv:system/etc/AudioFilterU8120.csv \
     $(LOCAL_PATH)/prebuilt/etc/AutoVolumeControl.txt:system/etc/AutoVolumeControl.txt \
-    $(LOCAL_PATH)/prebuilt/etc/01_qc.cfg:system/etc/01_qc.cfg
+    $(LOCAL_PATH)/prebuilt/etc/AudioFilter.csv:system/etc/AudioFilter.csv
 
-# rmt_storage
+# surf_keypad
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/bin/rmt_storage:system/bin/rmt_storage
+    $(LOCAL_PATH)/prebuilt/usr/keychars/surf_keypad.kcm.bin:system/usr/keychars/surf_keypad.kcm.bin
 
-# Other
+# Decoders
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/lib/egl/egl.cfg:system/lib/egl/egl.cfg \
-    $(LOCAL_PATH)/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf \
-    $(LOCAL_PATH)/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl
+    $(LOCAL_PATH)/prebuilt/lib/libmm-omxcore.so:system/lib/libmm-omxcore.so \
+    $(LOCAL_PATH)/prebuilt/lib/libOmxCore.so:system/lib/libOmxCore.so
 
-# Sysctl
+# Zipalign and scripts
 PRODUCT_COPY_FILES += \
-    device/zte/common/prebuilt/etc/init.d/01sysctl:system/etc/init.d/01sysctl \
-    device/zte/common/prebuilt/etc/sysctl.conf:system/etc/sysctl.conf
+    $(LOCAL_PATH)/prebuilt/etc/init.d/02huawei:system/etc/init.d/02huawei \
+    $(LOCAL_PATH)/prebuilt/etc/init.d/70zipalign:system/etc/init.d/70zipalign \
+    $(LOCAL_PATH)/prebuilt/bin/zipalign:system/bin/zipalign
+
 
 # Bluetooth configuration files
 PRODUCT_COPY_FILES += \
     system/bluetooth/data/main.conf:system/etc/bluetooth/main.conf
 
-# For userdebug builds
-ADDITIONAL_DEFAULT_PROPERTIES += \
-    ro.secure=0 \
-    ro.allow.mock.location=1 \
-    ro.debuggable=1
+# USB autorun.iso for cdrom emulation in kernel driver
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/prebuilt/cdrom/autorun.iso:system/cdrom/autorun.iso
 
-TARGET_PREBUILT_KERNEL := device/huawei/u8120/prebuilt/kernel
-
-$(call inherit-product-if-exists, vendor/huawei/u8120/u8120-vendor.mk)
+# Touchscreen
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/prebuilt/usr/idc/synaptics.idc:system/usr/idc/synaptics.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/cypress-ts-innolux_Ver04.idc:system/usr/idc/cypress-ts-innolux_Ver04.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/melfas-touchscreen.Ver23.idc:system/usr/idc/melfas-touchscreen.Ver23.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/melfas-touchscreen_ver23.idc:system/usr/idc/melfas-touchscreen_ver23.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/melfas-touchscreen_Ver23.idc:system/usr/idc/melfas-touchscreen_Ver23.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/melfas-touchscreen.idc:system/usr/idc/melfas-touchscreen.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/7k_handset.idc:system/usr/idc/7k_handset.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/qwerty.idc:system/usr/idc/qwerty.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/qwerty2.idc:system/usr/idc/qwerty2.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/kp_test_input.idc:system/usr/idc/kp_test_input.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/surf_keypad.idc:system/usr/idc/surf_keypad.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/u8120-keypad.idc:system/usr/idc/u8120-keypad.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/touchscreen-keypad.idc:system/usr/idc/touchscreen-keypad.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/msm_touchscreen.idc:system/usr/idc/msm_touchscreen.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/ts_test_input.idc:system/usr/idc/ts_test_input.idc \
+    $(LOCAL_PATH)/prebuilt/usr/idc/sensors.idc:system/usr/idc/sensors.idc \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/synaptics.kl:system/usr/keylayout/synaptics.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/surf_keypad.kl:system/usr/keylayout/surf_keypad.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/u8120-keypad.kl:system/usr/keylayout/u8120-keypad.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/cypress-ts-innolux_Ver04.kl:system/usr/keylayout/cypress-ts-innolux_Ver04.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/melfas-touchscreen.Ver23.kl:system/usr/keylayout/melfas-touchscreen.Ver23.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/melfas-touchscreen_ver23.kl:system/usr/keylayout/melfas-touchscreen_ver23.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/synaptics-rmi-touchscreen.kl:system/usr/keylayout/synaptics-rmi-touchscreen.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/touchscreen-keypad.kl:system/usr/keylayout/touchscreen-keypad.kl \
+    $(LOCAL_PATH)/prebuilt/usr/keylayout/7k_handset.kl:system/usr/keylayout/7k_handset.kl
 
